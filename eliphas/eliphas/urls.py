@@ -7,8 +7,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'ecore.views.home', name='home'),
-    url(r'^login$', 'ecore.views.login'),
-    url(r'^register$', 'ecore.views.register'),
+#    url(r'^login/$', 'ecore.views.login'),
+#    url(r'^register/$', 'ecore.views.register'),
     #url(r'^eliphas/', include('eliphas.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

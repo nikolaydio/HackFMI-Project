@@ -7,6 +7,11 @@ class menu_entry():
 	def __init__(self, id, name):
 		self.id = id
 		self.name = name
+
 def home(request):
 	menu = [menu_entry(1, "home"), menu_entry(2, "login")]
 	return render_to_response('ecore/home.html', {"menu_list": menu})
+
+def question(request):
+	pass
+

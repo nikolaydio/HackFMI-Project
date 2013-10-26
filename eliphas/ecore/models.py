@@ -4,12 +4,15 @@ from django.db import models
 
 class Exam(models.Model):
 	name = models.CharField(max_length=64)
-	
-class Question(models.Model):
-	text = models.CharField(max_lenght=512)
 
-class Choice(models.Model):
-	question_id = models.ForeigKey(Question)
+class QuestionGroup(models.Model):
+	exams = models.ManyToManyField(Exam)
+
+class Question(models.Model):
+	group_id = models.ForeignKey(QuestionGroup)
 	text = models.CharField(max_length=512)
 
+class Choice(models.Model):
+	question_id = models.ForeignKey(Question)
+	text = models.CharField(max_length=512)
 
