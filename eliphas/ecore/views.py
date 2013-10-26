@@ -1,11 +1,34 @@
 # Create your views here.
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, render
+from ecore.models import Exam
 
+<<<<<<< HEAD
+=======
+class menu_entry():
+	id = 1
+	name = "home"
+	def __init__(self, id, name):
+		self.id = id
+		self.name = name
+>>>>>>> 554e982a34c46137d3444b697d50f8b6eace8583
 
 from django.template import RequestContext
 def home(request):
 	c = RequestContext(request, {})
 	return render_to_response('ecore/home.html', c)
+
+def exam_list(request):
+	exams = Exam.objects.all( )
+	return render(request, 'ecore/exam_list.html', {'exams': exams })
+
+def exam_detail(request, exam_id):
+	exam = get_object_or_404(Exam, pk=exam_id)
+	return render(request, 'ecore/exam_detail.html', {'exam': exam })
+
+def exam_questions(request, exam_id):
+	exam = get_object_or_404(Exam, pk=exam_id)
+	return render(request, 'ecore/exam_questions.html', {'exam': exam })
+
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -16,11 +39,6 @@ import django.forms as forms
 class AuthenticationForm(forms.Form):
     username = forms.CharField(max_length=100)
     password = forms.CharField(max_length=100)
-
-from django.contrib.auth.decorators import login_required
-@login_required
-def test_page(request):
-	return HttpResponse("alkdjdfglksdfgsdfg")
 
 def logout_view(request):
 	django.contrib.auth.logout(request)

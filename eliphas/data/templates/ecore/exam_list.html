@@ -1,0 +1,6 @@
+<h1>Exams</h1>
+
+{% for exam in exams %}
+	<p><a href="{% url 'exam_detail' exam.id %}">{{ exam.name }}</a></p>
+{% endfor %}
+

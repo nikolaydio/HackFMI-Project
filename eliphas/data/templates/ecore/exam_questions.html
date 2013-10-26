@@ -1,0 +1,8 @@
+<h1>{{ exam.name }}</h1>
+
+{% for group in exam.questiongroup_set.all %}
+	{% for question in group.question_set.all %}
+	<p>{{ question.text }}</p>
+	{% endfor %}
+{% endfor %}
+
