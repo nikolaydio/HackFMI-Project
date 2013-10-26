@@ -42,6 +42,7 @@ class Question(models.Model):
 class Choice(models.Model):
 	question = models.ForeignKey(Question, related_name='choices')
 	text = models.CharField(max_length=512)
+	points = models.IntegerField()
 
 	def __unicode__(self):
 		return self.text
