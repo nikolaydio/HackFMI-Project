@@ -2,16 +2,6 @@
 from django.shortcuts import get_object_or_404, render_to_response, render
 from ecore.models import Exam
 
-<<<<<<< HEAD
-=======
-class menu_entry():
-	id = 1
-	name = "home"
-	def __init__(self, id, name):
-		self.id = id
-		self.name = name
->>>>>>> 554e982a34c46137d3444b697d50f8b6eace8583
-
 from django.template import RequestContext
 def home(request):
 	c = RequestContext(request, {})
