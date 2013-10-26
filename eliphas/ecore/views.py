@@ -35,6 +35,8 @@ def logout_view(request):
 	return HttpResponseRedirect("/")
 
 def login_view(request):
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/')
 	if request.method == "POST":
 		username = request.POST['username']
 		password = request.POST['password']
@@ -59,6 +61,8 @@ class RegisterForm(forms.Form):
 
 from django.contrib.auth.models import User
 def register_view(request):
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/')
 	if request.method == "POST":
 		username = request.POST['username']
 		password = request.POST['password']
