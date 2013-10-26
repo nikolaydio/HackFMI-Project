@@ -2,28 +2,28 @@
 from django.shortcuts import get_object_or_404, render_to_response, render
 from ecore.models import Exam
 from django.contrib.auth.models import User
+from django.http import HttpResponseForbidden
 
 from django.template import RequestContext
 def home(request):
-	c = RequestContext(request, {})
-	return render_to_response('ecore/home.html', c)
+	return render_to_response('ecore/home.html')
 
 def exam_list(request):
-	exams = Exam.objects.all( )
+	exams = request.user.exam_set.all()
 	return render(request, 'ecore/exam_list.html', {'exams': exams })
 
 def exam_detail(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
+	if not exam.allowed_users.filter(pk=request.user.id).exists():
+		return HttpResponseForbidden()
 	return render(request, 'ecore/exam_detail.html', {'exam': exam })
 
 def exam_questions(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
-	examinstance = request.user.exams.filter(exam_id=exam_id)
+	examinstance = request.user.exams.get(exam_id=exam.id)
 	if not examinstance:
 		examinstance = exam.TakeExam(request.user)
-	else:
-		examinstance = examinstance[0]
-	import ipdb; ipdb.set_trace()
+	print examinstance, dir(examinstance)
 	return render(request, 'ecore/exam_questions.html', {'examinstance': examinstance })
 
 
