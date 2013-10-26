@@ -1,6 +1,7 @@
 # Create your views here.
 from django.shortcuts import get_object_or_404, render_to_response, render
 from ecore.models import Exam
+from django.contrib.auth.models import User
 
 class menu_entry():
 	id = 1
@@ -25,6 +26,13 @@ def exam_detail(request, exam_id):
 
 def exam_questions(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
+	# todo: if user not assigned, create instace, else get instance
+	instance = request.user.exams.filter(exam_id=exam.id)
+	print instance
+	if not instance:
+		instance = exam.TakeExam(request.user)
+	else:
+		instance = instance[0]
 	return render(request, 'ecore/exam_questions.html', {'exam': exam })
 
 
