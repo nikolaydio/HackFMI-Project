@@ -15,9 +15,17 @@ def home(request):
 	c = RequestContext(request, {"menu_list": menu})
 	return render_to_response('ecore/home.html', c)
 
+def exam_list(request):
+	exams = Exam.objects.all( )
+	return render(request, 'ecore/exam_list.html', {'exams': exams })
+
 def exam_detail(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
 	return render(request, 'ecore/exam_detail.html', {'exam': exam })
+
+def exam_questions(request, exam_id):
+	exam = get_object_or_404(Exam, pk=exam_id)
+	return render(request, 'ecore/exam_questions.html', {'exam': exam })
 
 
 from django.http import HttpResponseRedirect, HttpResponse
