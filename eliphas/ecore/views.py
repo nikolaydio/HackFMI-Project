@@ -25,7 +25,23 @@ def exam_questions(request, exam_id):
 		instance = exam.TakeExam(request.user)
 	else:
 		instance = instance[0]
+	instance.save()
 	return render(request, 'ecore/exam_questions.html', {'exam': exam })
+
+from django.contrib.auth.decorators import login_required
+import ecore.models
+@login_required
+#name = doexam
+def active_exam_view(request):
+	exam_instance = ecore.models.ExamInstance.objects.filter(user=request.user)
+	if len(exam_instance) < 1:
+		return HttpResponse("You are not doing any exams currently.")
+	print(exam_instance[0].exam.name)
+	questions = ecore.models.QuestionInstance.objects.filter(exam=exam_instance[0])
+	c = RequestContext(request, {"time_left":100, "question_list": questions, "examinst":exam_instance[0]})
+	return render_to_response('ecore/exam.html', c)
+
+
 
 
 from django.http import HttpResponseRedirect, HttpResponse

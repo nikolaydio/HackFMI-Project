@@ -11,7 +11,7 @@ class Exam(models.Model):
 		# todo: choose some random questions
 		for group in self.questiongroup_set.all():
 			for question in group.question_set.all():
-				exam.questioninstance_set.create(choice=None)
+				exam.question.instance_set.create(choice=None)
 		return exam
 
 class QuestionGroup(models.Model):
@@ -24,6 +24,7 @@ class Question(models.Model):
 class Choice(models.Model):
 	question = models.ForeignKey(Question)
 	text = models.CharField(max_length=512)
+	points = models.IntegerField()
 
 class ExamInstance(models.Model):
 	exam = models.ForeignKey(Exam)
