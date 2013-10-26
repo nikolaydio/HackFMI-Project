@@ -1,16 +1,10 @@
 # Create your views here.
 from django.shortcuts import render_to_response
 
-class menu_entry():
-	id = 1
-	name = "home"
-	def __init__(self, id, name):
-		self.id = id
-		self.name = name
+
 from django.template import RequestContext
 def home(request):
-	menu = [menu_entry(1, "home"), menu_entry(2, "login")]
-	c = RequestContext(request, {"menu_list": menu})
+	c = RequestContext(request, {})
 	return render_to_response('ecore/home.html', c)
 
 from django.http import HttpResponseRedirect, HttpResponse
@@ -23,8 +17,16 @@ class AuthenticationForm(forms.Form):
     username = forms.CharField(max_length=100)
     password = forms.CharField(max_length=100)
 
+from django.contrib.auth.decorators import login_required
+@login_required
+def test_page(request):
+	return HttpResponse("alkdjdfglksdfgsdfg")
 
-def login(request):
+def logout_view(request):
+	django.contrib.auth.logout(request)
+	return HttpResponseRedirect("/")
+
+def login_view(request):
 	if request.method == "POST":
 		username = request.POST['username']
 		password = request.POST['password']
@@ -40,3 +42,29 @@ def login(request):
 	else:
 		c = RequestContext(request, {'form':AuthenticationForm})
 		return render_to_response( "ecore/login.html", c)
+
+class RegisterForm(forms.Form):
+	username = forms.CharField(max_length=32)
+	password = forms.CharField(max_length=32)
+	password_again = forms.CharField(max_length=32)
+	email = forms.CharField(max_length=48)
+
+from django.contrib.auth.models import User
+def register_view(request):
+	if request.method == "POST":
+		username = request.POST['username']
+		password = request.POST['password']
+		password_again = request.POST['password_again']
+		email = request.POST['email']
+		
+		if password != password_again:
+			return HttpResponse("Passwords are not the same.")
+
+		if len(User.objects.filter(username=username)) > 0:
+			return HttpResponse("Username already taken.")
+		user = User.objects.create_user(username, email, password)
+		user.save()
+		return HttpResponseRedirect('/login')
+	else:
+		c = RequestContext(request, {'form':RegisterForm})
+		return render_to_response( "ecore/register.html", c)
