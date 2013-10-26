@@ -18,15 +18,14 @@ def exam_detail(request, exam_id):
 
 def exam_questions(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
-	# todo: if user not assigned, create instace, else get instance
-	instance = request.user.exams.filter(exam_id=exam.id)
-	print instance
-	if not instance:
-		instance = exam.TakeExam(request.user)
+	examinstance = request.user.exams.filter(exam_id=exam_id)
+	if not examinstance:
+		examinstance = exam.TakeExam(request.user)
+		examinstance.save()
 	else:
-		instance = instance[0]
-	instance.save()
-	return render(request, 'ecore/exam_questions.html', {'exam': exam })
+		examinstance = examinstance[0]
+	import ipdb; ipdb.set_trace()
+	return render(request, 'ecore/exam_questions.html', {'examinstance': examinstance })
 
 from django.contrib.auth.decorators import login_required
 import ecore.models
