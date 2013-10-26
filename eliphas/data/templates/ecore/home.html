@@ -1,0 +1,8 @@
+{% extends "ecore/base.html" %}
+{% block header %}
+<div id="header" class="menu"><h1 id="head_text">Eliphas</h1>
+{% for entry in menu_list %}
+	<div id={{ entry.id }}>{{entry.name}}</div>
+{% endfor %}
+</div>
+{% endblock %}
