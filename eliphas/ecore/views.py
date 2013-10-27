@@ -18,7 +18,7 @@ def home(request):
 	exams = request.user.exams.all()
 	for ex in exams:
 		if (timezone.now() > ex.starttime):
-			dur = ex.exam.duration - (timezone.now() - ex.starttime).seconds
+			dur = ex.time_left()
 			if dur <= 0:
 				#exam is already taken:
 				taken_list.append([ex.exam.pk, ex.exam.name, ex.result(), ex.max_result()])

@@ -81,7 +81,8 @@ class ExamInstance(models.Model):
 			if self.endtime == None:
 				self.endtime = timezone.now()
 				self.save()
-
+	def time_left(self):
+		return self.exam.duration - (timezone.now() - self.starttime).seconds
 
 
 
