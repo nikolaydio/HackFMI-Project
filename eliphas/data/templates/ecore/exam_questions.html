@@ -40,16 +40,17 @@
 <div id="main">
 	<h2>{{ examinst.exam.name }}</h2>
 	<div id="questions">
-		{% for question in question_list %}
+		{% for question in examinst.questions.all %}
 			<div id="question">
-				<h4>Question {{ forloop.counter }}</h4>
-				<p id="qdesc">{{ question.text }}</p>
+				<h4>Question #{{ forloop.counter }}</h4>
+				<p id="qdesc">{{ question.question.text }}</p>
 				<div id="options">
-				{% for option in question.question.choice_set.all %}
-					<p>{{ option.text }}</p>
+				{% for option in question.question.choices.all %}
+					<input type="radio" name="{{question.question.text}}" />{{ option.text }}</p>
 				{% endfor %}
 				</div>
 			</div>
+			<hr>
 		{% endfor %}
 	</div>
 </div>

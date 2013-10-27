@@ -40,6 +40,10 @@ def exam_detail(request, exam_id):
 		return HttpResponseForbidden()
 	return render(request, 'ecore/exam_detail.html', {'exam': exam })
 
+
+class AuthenticationForm(forms.Form):
+    choice = forms.CharField(max_length=100)
+
 @login_required
 def exam_questions(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
@@ -48,7 +52,7 @@ def exam_questions(request, exam_id):
 		examinstance = exam.TakeExam(request.user)
 	else:
 		examinstance = examinstance[0]
-	return render(request, 'ecore/exam_questions.html', {'examinstance': examinstance })
+	return render(request, 'ecore/exam_questions.html', {'examinst': examinstance })
 
 
 import ecore.models
