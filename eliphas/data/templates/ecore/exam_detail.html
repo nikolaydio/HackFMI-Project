@@ -2,14 +2,19 @@
 {% block content %}
 <h2>{{ exam.name }}</h2>
 
+
+<p>Duration: {{ exam.CoolDuration }}</p>
+<p>Questions count: {{ exam.QuestionCount }}</p>
+
 <h3>Users signed:</h3>
-<p>{{ users_signed }}</p>
-<h3>Completed:</h3>
-<p>{{ times_completed }}</p>
-<h3>Average points:</h3>
-<p>{{ average_points }}</p>
+{% for user in exam.users_taken %}
+	<h4>{{ user }}</h4>
+{% empty %}
+	<h4>There are no users signed for this exam.</h4>
+{% endfor %}
 
 {% if test_available %}
 <p><a href="{% url 'exam_questions' exam.id %}">Take exam</a></p>
 {% endif %}
 {% endblock %}
+
