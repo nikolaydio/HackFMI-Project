@@ -6,8 +6,10 @@ from django.utils import timezone
 
 class Exam(models.Model):
 	name = models.CharField(max_length=64)
+	visibility_starttime = models.DateTimeField(null=True, blank=True)
+	visibility_endtime = models.DateTimeField(null=True, blank=True)
 	duration = models.IntegerField()
-	allowed_users = models.ManyToManyField(User)
+	allowed_users = models.ManyToManyField(User, related_name='accessexams')
 
 	def TakeExam(self, user):
 		exam = user.exams.create(exam=self, starttime=timezone.now())
@@ -42,7 +44,7 @@ class Question(models.Model):
 class Choice(models.Model):
 	question = models.ForeignKey(Question, related_name='choices')
 	text = models.CharField(max_length=512)
-#	points = models.IntegerField()
+	points = models.IntegerField(default=1)
 
 	def __unicode__(self):
 		return self.text

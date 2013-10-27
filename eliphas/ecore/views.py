@@ -7,10 +7,12 @@ from django import forms
 
 from django.template import RequestContext
 def home(request):
-	return render_to_response('ecore/home.html')
+	c = RequestContext(request, {})
+	return render_to_response('ecore/home.html', c)
 
 def exam_list(request):
-	exams = request.user.exam_set.all()
+	exams = set(request.user.exams.all())
+	exams = exams.union(request.user.accessexams.all())
 	return render(request, 'ecore/exam_list.html', {'exams': exams })
 
 def exam_detail(request, exam_id):
@@ -27,16 +29,6 @@ def exam_questions(request, exam_id):
 	else:
 		examinstance = examinstance[0]
 	return render(request, 'ecore/exam_questions.html', {'examinstance': examinstance })
-
-class QuestionForm(forms.Form):
-	choices = forms.ModelChoiceField("La")
-
-def exam_question(request, exam_id, question_id):
-	questioninstance = get_object_or_404(QuestionInstance, pk=question_id)
-	form = QuestionForm()
-	form.fields['choices'].queryset = get_list_or_404(Choice, question_id=questioninstance.question.id)
-	return render(request, 'ecore/exam_question.html', {'questioninstance': questioninstance, 'form': form })
-
 
 from django.contrib.auth.decorators import login_required
 import ecore.models
@@ -62,7 +54,7 @@ import django.contrib.auth
 import django.forms as forms
 class AuthenticationForm(forms.Form):
     username = forms.CharField(max_length=100)
-    password = forms.CharField(max_length=100)
+    password = forms.CharField(max_length=100, widget=forms.PasswordInput())
 
 def logout_view(request):
 	django.contrib.auth.logout(request)
@@ -89,9 +81,9 @@ def login_view(request):
 
 class RegisterForm(forms.Form):
 	username = forms.CharField(max_length=32)
-	password = forms.CharField(max_length=32)
-	password_again = forms.CharField(max_length=32)
-	email = forms.CharField(max_length=48)
+	password = forms.CharField(max_length=32, widget=forms.PasswordInput())
+	password_again = forms.CharField(max_length=32, widget=forms.PasswordInput())
+	email = forms.EmailField(max_length=48)
 
 from django.contrib.auth.models import User
 def register_view(request):
