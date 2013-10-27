@@ -1,0 +1,9 @@
+<h1>{{ questioninstance.examinstance.exam.name }}</h1>
+<h2>{{ questioninstance.question.text }}</h2>
+
+{% for field in form.visible_fields %}
+	<p>{{ field.queryset }}</p>
+	{% for choice in field.queryset %}
+		<p>{{ choice }}</p>
+	{% endfor %}
+{% endfor %}

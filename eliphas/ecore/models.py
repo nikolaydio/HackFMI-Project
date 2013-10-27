@@ -42,7 +42,7 @@ class Question(models.Model):
 class Choice(models.Model):
 	question = models.ForeignKey(Question, related_name='choices')
 	text = models.CharField(max_length=512)
-	points = models.IntegerField()
+#	points = models.IntegerField()
 
 	def __unicode__(self):
 		return self.text
@@ -50,7 +50,7 @@ class Choice(models.Model):
 
 class ExamInstance(models.Model):
 	starttime = models.DateTimeField()
-	endtime = models.DateTimeField(null=True, default=None)
+	endtime = models.DateTimeField(null=True, blank=True, default=None)
 	exam = models.ForeignKey(Exam, related_name='instances')
 	user = models.ForeignKey(User, related_name='exams')
 
@@ -61,7 +61,7 @@ class ExamInstance(models.Model):
 class QuestionInstance(models.Model):
 	examinstance = models.ForeignKey(ExamInstance, related_name='questions')
 	question = models.ForeignKey(Question)
-	choice = models.ForeignKey(Choice, null=True)
+	choice = models.ForeignKey(Choice, null=True, blank=True)
 
 	def __unicode__(self):
 		return str(self.examinstance) + " -- " + str(self.question) + ": " + str(self.choice)

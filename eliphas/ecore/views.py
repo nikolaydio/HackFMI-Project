@@ -1,8 +1,9 @@
 # Create your views here.
-from django.shortcuts import get_object_or_404, render_to_response, render
-from ecore.models import Exam
+from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response, render
+from ecore.models import Exam, QuestionInstance, Choice
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
+from django import forms
 
 from django.template import RequestContext
 def home(request):
@@ -20,10 +21,22 @@ def exam_detail(request, exam_id):
 
 def exam_questions(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
-	examinstance = request.user.exams.get(exam_id=exam.id)
+	examinstance = request.user.exams.filter(exam_id=exam.id, endtime=None)
 	if not examinstance:
 		examinstance = exam.TakeExam(request.user)
+	else:
+		examinstance = examinstance[0]
 	return render(request, 'ecore/exam_questions.html', {'examinstance': examinstance })
+
+class QuestionForm(forms.Form):
+	choices = forms.ModelChoiceField("La")
+
+def exam_question(request, exam_id, question_id):
+	questioninstance = get_object_or_404(QuestionInstance, pk=question_id)
+	form = QuestionForm()
+	form.fields['choices'].queryset = get_list_or_404(Choice, question_id=questioninstance.question.id)
+	return render(request, 'ecore/exam_question.html', {'questioninstance': questioninstance, 'form': form })
+
 
 from django.contrib.auth.decorators import login_required
 import ecore.models

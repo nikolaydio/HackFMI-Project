@@ -1,6 +1,6 @@
-<h1>{{ exam.name }}</h1>
+<h1>{{ examinstance.exam.name }}</h1>
 
-{% for questioninstance in exam.question.instance_set.all %}
-	<p>{{ questioninstance.question.text }}</p>
+{% for questioninstance in examinstance.questions.all %}
+	<p><a href="{% url 'exam_question' examinstance.exam.id questioninstance.id %}">#{{ forloop.counter }}</a>{{ questioninstance.question.text }}</p>
 {% endfor %}
 
