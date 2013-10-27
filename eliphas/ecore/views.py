@@ -8,27 +8,37 @@ from django.contrib.auth.decorators import login_required
 
 
 from django.template import RequestContext
+from django.utils import timezone
 
 @login_required
 def home(request):
-	exam_list = []
+	active_list = []
+	upcomming_list = []
 	exams = request.user.exams.all()
 	for ex in exams:
-		exam_list.append( [ex.exam.pk, ex.exam.name, 200] )
-	c = RequestContext(request, {"active_exams":exam_list})
+		if (timezone.now() > ex.starttime):
+			dur = ex.exam.duration - (timezone.now() - ex.starttime).seconds
+			active_list.append([ex.exam.pk, ex.exam.name, dur])
+		else:
+			dur = (ex.starttime - timezone.now()).seconds
+			upcomming_list.append( [ex.exam.pk, ex.exam.name, dur] )
+	c = RequestContext(request, {"active_exams":active_list, "upcomming_exams":upcomming_list, "active_count": len(active_list)})
 	return render_to_response('ecore/home.html', c)
 
+@login_required
 def exam_list(request):
 	exams = set(request.user.exams.all())
 	exams = exams.union(request.user.accessexams.all())
 	return render(request, 'ecore/exam_list.html', {'exams': exams })
 
+@login_required
 def exam_detail(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
 	if not exam.allowed_users.filter(pk=request.user.id).exists():
 		return HttpResponseForbidden()
 	return render(request, 'ecore/exam_detail.html', {'exam': exam })
 
+@login_required
 def exam_questions(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
 	examinstance = request.user.exams.filter(exam_id=exam.id, endtime=None)

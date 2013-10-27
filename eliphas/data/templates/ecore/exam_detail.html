@@ -1,6 +1,15 @@
-{% extends "ecore/home.html" %}
+{% extends "ecore/base.html" %}
 {% block content %}
 <h2>{{ exam.name }}</h2>
 
+<h3>Users signed:</h3>
+<p>{{ users_signed }}</p>
+<h3>Completed:</h3>
+<p>{{ times_completed }}</p>
+<h3>Average points:</h3>
+<p>{{ average_points }}</p>
+
+{% if test_available %}
 <p><a href="{% url 'exam_questions' exam.id %}">Take exam</a></p>
+{% endif %}
 {% endblock %}
