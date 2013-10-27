@@ -72,15 +72,15 @@ class ExamInstance(models.Model):
 				points += max(a)
 		return points
 	def finish_exam(self, force):
-		flag = None
-		if force:
-			flag = True
-		elif (ex.exam.duration - (timezone.now() - ex.starttime).seconds) <= 0:
+		flag = False
+		if (self.exam.duration - (timezone.now() - self.starttime).seconds) <= 0:
 			flag = True
 		else:
 			flag = False
-		if flag:
-			endtime = timezone.now()
+		if force or flag:
+			if self.endtime == None:
+				self.endtime = timezone.now()
+				self.save()
 
 
 
