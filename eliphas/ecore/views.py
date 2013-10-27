@@ -6,7 +6,6 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django import forms
 from django.contrib.auth.decorators import login_required
 
-
 from django.template import RequestContext
 from django.utils import timezone
 
@@ -43,6 +42,9 @@ def exam_list(request):
 @login_required
 def exam_detail(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
+	users_taken = ExamInstance.objects.filter(exam_id=exam_id)
+	users_taken = set([e.user for e in users_taken])
+	exam.users_taken = users_taken
 	if not exam.allowed_users.filter(pk=request.user.id).exists():
 		return HttpResponseForbidden()
 	return render(request, 'ecore/exam_detail.html', {'exam': exam })

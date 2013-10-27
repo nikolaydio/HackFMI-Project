@@ -11,6 +11,15 @@ class Exam(models.Model):
 	duration = models.IntegerField()
 	allowed_users = models.ManyToManyField(User, related_name='accessexams')
 
+	def CoolDuration(self):
+		return self.duration
+	
+	def QuestionCount(self):
+		count = 0
+		for info in self.examquestiongrouplink_set.all():
+			count += info.number
+		return count
+
 	def TakeExam(self, user):
 		exam = user.exams.create(exam=self, starttime=timezone.now())
 		# todo: choose some random questions
