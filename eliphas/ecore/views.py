@@ -65,7 +65,8 @@ def exam_select_choice(request, exam_id, choice_id):
 	examinstance = get_object_or_404(ExamInstance, exam_id=exam_id, user_id=request.user.id, endtime=None)
 	choice = get_object_or_404(Choice, pk=choice_id)
 	questioninstance = examinstance.questions.get(question_id=choice.question.id)
-	print questioninstance
+	questioninstance.choice = choice
+	questioninstance.save()
 #	examinstance = request.user.exams.get(exam_id=exam_id, endtime=None)
 	
 	return HttpResponse('')

@@ -56,7 +56,7 @@
 					<p>{{ question.question.text }}</p>
 					<div>
 					{% for option in question.question.choices.all %}
-						<input type="radio" name="{{question.question.text}} onclick="selectOption({{ option.id }});"" />{{ option.text }}</br />
+						<input type="radio" name="{{question.question.text}}" onclick="selectOption({{ option.id }});" />{{ option.text }}</br />
 					{% endfor %}
 					</div>
 				</div>
