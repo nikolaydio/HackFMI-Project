@@ -39,33 +39,34 @@
 
 
 {% block content %}
-<div id="sidebar">
-	<h3>Last login:</h3>
-	<p id="last login">{{ user.last_login }}</p>
-	<h3>Exam taken:</h3>
-	<p id="exam taken">{{ user.exams.all.count }}</p>
-</div>	
+<div class="row-fluid">
+	<div class="span4" id="sidebar">
+		<h3>Last login:</h3>
+		<p id="last login">{{ user.last_login }}</p>
+		<h3>Exam taken:</h3>
+		<p id="exam taken">{{ user.exams.all.count }}</p>
+	</div>	
 
-<div id="main">
-	<h3>Exams registered to:</h3>
-	<h4>Active exams</h4>
-	<dl id="active_exams">
-		{% for id, exam_name, time in active_exams %}
-			<dt id=""><a href="{% url 'exam_questions' id %}">{{ exam_name }}</a></dt>
-			<dd class="exam_timer" id="exam_time_{{ forloop.counter0 }}">{{ time }}</dd>
-		{% empty %}
-			<p>No active exams.</p>
-		{% endfor %}
-	</dl>
-	<h4>Upcomming exams</h4>
-	<dl id="upcomming_exams">
-		{% for id, exam_name, time in upcomming_exams %}
-			<dt id=""><a href="{% url 'exam_detail' id %}">{{ exam_name }}</a></dt>
-			<dd  class="exam_timer" id="exam_time_{{ forloop.counter0|add:active_count }}">{{ time }}</dd>
-		{% empty %}
-			<p>No upcomming exams.</p>
-		{% endfor %}
-	</dl>
+	<div class="span4" id="main">
+		<h3>Exams registered to:</h3>
+		<h4>Active exams</h4>
+		<dl id="active_exams">
+			{% for id, exam_name, time in active_exams %}
+				<dt id=""><a href="{% url 'exam_questions' id %}">{{ exam_name }}</a></dt>
+				<dd class="exam_timer" id="exam_time_{{ forloop.counter0 }}">{{ time }}</dd>
+			{% empty %}
+				<p>No active exams.</p>
+			{% endfor %}
+		</dl>
+		<h4>Upcomming exams</h4>
+		<dl id="upcomming_exams">
+			{% for id, exam_name, time in upcomming_exams %}
+				<dt id=""><a href="{% url 'exam_detail' id %}">{{ exam_name }}</a></dt>
+				<dd  class="exam_timer" id="exam_time_{{ forloop.counter0|add:active_count }}">{{ time }}</dd>
+			{% empty %}
+				<p>No upcomming exams.</p>
+			{% endfor %}
+		</dl>
+	</div>
 </div>
-
 {% endblock %}

@@ -26,32 +26,34 @@
 
 
 {% block content %}
-<div id="sidebar">
-	<h2>Time left:</h2>
-	<p id="tclock">1:23:45</p>
-	<h3>Questions Answered:</h3>
-	<p id="questions">0/0</p>
-	<h3>People finished:</h3>
-	<p id="peoplec">0/0</p>
-	<h3>Average points:</h3>
-	<p id="points">0/0</p>
-</div>	
+<div class="row-fluid">
+	<div class="span4" id="sidebar">
+		<h4>Time left:</h4>
+		<p id="tclock">1:23:45</p>
+		<h4>Questions Answered:</h4>
+		<p id="questions">0/0</p>
+		<h4>People finished:</h4>
+		<p id="peoplec">0/0</p>
+		<h4>Average points:</h4>
+		<p id="points">0/0</p>
+	</div>	
 
-<div id="main">
-	<h2>{{ examinst.exam.name }}</h2>
-	<div id="questions">
-		{% for question in examinst.questions.all %}
-			<div id="question">
-				<h4>Question #{{ forloop.counter }}</h4>
-				<p id="qdesc">{{ question.question.text }}</p>
-				<div id="options">
-				{% for option in question.question.choices.all %}
-					<input type="radio" name="{{question.question.text}}" />{{ option.text }}</p>
-				{% endfor %}
+	<div class="span4" id="main">
+		<h2>{{ examinst.exam.name }}</h2>
+		<div id="questions">
+			{% for question in examinst.questions.all %}
+				<div id="question">
+					<h4>Question #{{ forloop.counter }}</h4>
+					<p id="qdesc">{{ question.question.text }}</p>
+					<div id="options">
+					{% for option in question.question.choices.all %}
+						<input type="radio" name="{{question.question.text}}" />{{ option.text }}</p>
+					{% endfor %}
+					</div>
 				</div>
-			</div>
-			<hr>
-		{% endfor %}
+				<hr>
+			{% endfor %}
+		</div>
 	</div>
 </div>
 
