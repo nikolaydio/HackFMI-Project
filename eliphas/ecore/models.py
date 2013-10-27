@@ -76,7 +76,7 @@ class ExamInstance(models.Model):
 	def max_result(self):
 		points = 0;
 		for q in self.questions.all():
-			a = [i.points for i in Choice.objects.filter(question=q)]
+			a = [i.points for i in Choice.objects.filter(question=q.question)]
 			if len(a) != 0:
 				points += max(a)
 		return points
@@ -92,7 +92,10 @@ class ExamInstance(models.Model):
 				self.save()
 	def time_left(self):
 		return self.exam.duration - (timezone.now() - self.starttime).seconds
-
+	def has_ended(self):
+		if self.time_left() <= 0 or self.endtime != None:
+			return True
+		return False
 
 
 class QuestionInstance(models.Model):
