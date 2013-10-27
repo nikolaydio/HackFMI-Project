@@ -1,6 +1,57 @@
-<h1>{{ examinstance.exam.name }}</h1>
+{% extends "ecore/base.html" %}
 
-{% for questioninstance in examinstance.questions.all %}
-	<p><a href="{% url 'exam_question' examinstance.exam.id questioninstance.id %}">#{{ forloop.counter }}</a>{{ questioninstance.question.text }}</p>
-{% endfor %}
+{% block javascript %}
+	<!-- This is in seconds -->
+	var time_left = {{ time_left }}
+	function initialize()
+	{
+		setInterval(tick, 1000)
+		tick()
+	}
+	function tick()
+	{
+		time_left -= 1
+		if(time_left < 0)
+		{
+			setInterval(tick, 1000*1000*1000)
+			time_left = 0
+		}
+		var hours = ~~(time_left / 3600)
+		var minutes = ~~((time_left % 3600) / 60)
+		var seconds = (time_left % 3600) % 60
+		document.getElementById("tclock").innerHTML= 
+			hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
+	}
+{% endblock %}
 
+
+{% block content %}
+<div id="sidebar">
+	<h2>Time left:</h2>
+	<p id="tclock">1:23:45</p>
+	<h3>Questions Answered:</h3>
+	<p id="questions">0/0</p>
+	<h3>People finished:</h3>
+	<p id="peoplec">0/0</p>
+	<h3>Average points:</h3>
+	<p id="points">0/0</p>
+</div>	
+
+<div id="main">
+	<h2>{{ examinst.exam.name }}</h2>
+	<div id="questions">
+		{% for question in question_list %}
+			<div id="question">
+				<h4>Question {{ forloop.counter }}</h4>
+				<p id="qdesc">{{ question.text }}</p>
+				<div id="options">
+				{% for option in question.question.choice_set.all %}
+					<p>{{ option.text }}</p>
+				{% endfor %}
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+
+{% endblock %}

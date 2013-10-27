@@ -1,2 +1,55 @@
 {% extends "ecore/base.html" %}
 
+{% block javascript %}
+	<!-- This is in seconds -->
+	var exam_times = new Array();
+	function initialize()
+	{
+		{% for id, name, dur in active_exams %}
+			exam_times[{{ forloop.counter0 }}] = {{ dur }};
+		{% endfor %}
+		setInterval(tick, 1000);
+		tick();
+	}
+	function get_to_str(time_left)
+	{
+		var hours = ~~(time_left / 3600);
+		var minutes = ~~((time_left % 3600) / 60);
+		var seconds = (time_left % 3600) % 60;
+		var ret_val = hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
+		return ret_val;
+	}
+	function tick()
+	{
+		for (var i=0;i<exam_times.length;i++)
+		{
+			if(exam_times[i] < 1)
+			{
+				location.reload();
+			}
+			exam_times[i] -= 1;
+			var el_id = "exam_time_" + i.toString()
+			document.getElementById(el_id).innerHTML = get_to_str(exam_times[i]);
+		}
+	}
+{% endblock %}
+
+
+{% block content %}
+<div id="sidebar">
+	<h3>Last login:</h3>
+	<p id="last login">{{ user.last_login }}</p>
+	<h3>Exam taken:</h3>
+	<p id="exam taken">{{ user.exams.all.count }}</p>
+</div>	
+
+<div id="main">
+	<dl id="active_exams">
+		{% for id, exam_name, time in active_exams %}
+			<dt id=""><a href="{% url 'exam_questions' id %}">{{ exam_name }}</a></dt>
+			<dd id="exam_time_{{ forloop.counter0 }}">{{ time }}</dd>
+		{% endfor %}
+	</dl>
+</div>
+
+{% endblock %}

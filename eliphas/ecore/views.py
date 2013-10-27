@@ -4,10 +4,19 @@ from ecore.models import Exam, QuestionInstance, Choice
 from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 from django import forms
+from django.contrib.auth.decorators import login_required
+
 
 from django.template import RequestContext
+
+@login_required
 def home(request):
-	return render_to_response('ecore/home.html')
+	exam_list = []
+	exams = request.user.exams.all()
+	for ex in exams:
+		exam_list.append( [ex.exam.pk, ex.exam.name, 200] )
+	c = RequestContext(request, {"active_exams":exam_list})
+	return render_to_response('ecore/home.html', c)
 
 def exam_list(request):
 	exams = request.user.exam_set.all()
@@ -28,21 +37,11 @@ def exam_questions(request, exam_id):
 		examinstance = examinstance[0]
 	return render(request, 'ecore/exam_questions.html', {'examinstance': examinstance })
 
-class QuestionForm(forms.Form):
-	choices = forms.ModelChoiceField("La")
 
-def exam_question(request, exam_id, question_id):
-	questioninstance = get_object_or_404(QuestionInstance, pk=question_id)
-	form = QuestionForm()
-	form.fields['choices'].queryset = get_list_or_404(Choice, question_id=questioninstance.question.id)
-	return render(request, 'ecore/exam_question.html', {'questioninstance': questioninstance, 'form': form })
-
-
-from django.contrib.auth.decorators import login_required
 import ecore.models
 @login_required
 #name = doexam
-def active_exam_view(request):
+def my_exams_view(request):
 	exam_instance = ecore.models.ExamInstance.objects.filter(user=request.user)
 	if len(exam_instance) < 1:
 		return HttpResponse("You are not doing any exams currently.")
