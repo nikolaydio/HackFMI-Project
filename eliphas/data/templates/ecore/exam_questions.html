@@ -2,7 +2,7 @@
 
 {% block javascript %}
 	<!-- This is in seconds -->
-	var time_left = 0; // todo
+	var time_left = {{ examinst.time_left }};
 	function initialize()
 	{
 		setInterval(tick, 1000)

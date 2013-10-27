@@ -17,7 +17,7 @@ def home(request):
 	exams = request.user.exams.all()
 	for ex in exams:
 		if (timezone.now() > ex.starttime):
-			dur = ex.exam.duration - (timezone.now() - ex.starttime).seconds
+			dur = ex.time_left()
 			if dur <= 0:
 				#exam is already taken:
 				taken_list.append([ex.exam.pk, ex.exam.name, ex.result(), ex.max_result()])
@@ -138,13 +138,19 @@ def register_view(request):
 		email = request.POST['email']
 		
 		if password != password_again:
-			return HttpResponse("Passwords are not the same.")
+			c = RequestContext(request, {'form':RegisterForm, 'error_msg':"Passwords are not the same."})
+			return render_to_response( "ecore/register.html", c)
 
 		if len(User.objects.filter(username=username)) > 0:
-			return HttpResponse("Username already taken.")
+			c = RequestContext(request, {'form':RegisterForm, 'error_msg':"Username already taken."})
+			return render_to_response( "ecore/register.html", c)
+
 		user = User.objects.create_user(username, email, password)
 		user.save()
-		return HttpResponseRedirect('/login')
+
+		#render the login form
+		c = RequestContext(request, {'form':AuthenticationForm, 'error_msg':"Your account has been crated. Please log in."})
+		return render_to_response( "ecore/login.html", c)
 	else:
 		c = RequestContext(request, {'form':RegisterForm})
 		return render_to_response( "ecore/register.html", c)
