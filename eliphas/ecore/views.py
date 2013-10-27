@@ -69,7 +69,6 @@ def exam_select_choice(request, exam_id, choice_id):
 	questioninstance = examinstance.questions.get(question_id=choice.question.id)
 	questioninstance.choice = choice
 	questioninstance.save()
-#	examinstance = request.user.exams.get(exam_id=exam_id, endtime=None)
 	
 	return HttpResponse('')
 
