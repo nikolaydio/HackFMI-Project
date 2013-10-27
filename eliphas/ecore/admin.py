@@ -1,5 +1,6 @@
 from django.contrib import admin
 from ecore.models import Exam, QuestionGroup, Question, Choice, ExamInstance, QuestionInstance, ExamQuestionGroupLink
+from django import forms
 
 class ChoiceInline(admin.StackedInline):
 	model = Choice
@@ -16,12 +17,14 @@ class ExamQuestionGroupLinkInline(admin.TabularInline):
 
 
 class ExamAdmin(admin.ModelAdmin):
+	date_hierarchy = 'visibility_starttime'
 	inlines = (ExamQuestionGroupLinkInline,)
 
+class QuestionGroupCreateForm(forms.ModelForm):
+	pass
 
 class QuestionGroupAdmin(admin.ModelAdmin):
 	inlines = (ExamQuestionGroupLinkInline,)
-
 
 admin.site.register(Exam, ExamAdmin)
 admin.site.register(QuestionGroup, QuestionGroupAdmin)

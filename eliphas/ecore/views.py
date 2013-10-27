@@ -19,7 +19,8 @@ def home(request):
 	return render_to_response('ecore/home.html', c)
 
 def exam_list(request):
-	exams = request.user.exam_set.all()
+	exams = set(request.user.exams.all())
+	exams = exams.union(request.user.accessexams.all())
 	return render(request, 'ecore/exam_list.html', {'exams': exams })
 
 def exam_detail(request, exam_id):
@@ -61,7 +62,7 @@ import django.contrib.auth
 import django.forms as forms
 class AuthenticationForm(forms.Form):
     username = forms.CharField(max_length=100)
-    password = forms.CharField(max_length=100)
+    password = forms.CharField(max_length=100, widget=forms.PasswordInput())
 
 def logout_view(request):
 	django.contrib.auth.logout(request)
@@ -88,9 +89,9 @@ def login_view(request):
 
 class RegisterForm(forms.Form):
 	username = forms.CharField(max_length=32)
-	password = forms.CharField(max_length=32)
-	password_again = forms.CharField(max_length=32)
-	email = forms.CharField(max_length=48)
+	password = forms.CharField(max_length=32, widget=forms.PasswordInput())
+	password_again = forms.CharField(max_length=32, widget=forms.PasswordInput())
+	email = forms.EmailField(max_length=48)
 
 from django.contrib.auth.models import User
 def register_view(request):
