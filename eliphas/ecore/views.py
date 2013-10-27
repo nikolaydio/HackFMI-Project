@@ -35,8 +35,9 @@ def home(request):
 
 @login_required
 def exam_list(request):
+	now = timezone.now()
 	exams = set(request.user.exams.all())
-	exams = exams.union(request.user.accessexams.all())
+	exams = exams.union([e for e in request.user.accessexams.all() if ( not e.visibility_starttime or e.visibility_starttime<=now ) and ( not e.visibility_endtime or e.visibility_endtime>=now ) ])
 	return render(request, 'ecore/exam_list.html', {'exams': exams })
 
 @login_required
