@@ -8,8 +8,10 @@ class Exam(models.Model):
 	name = models.CharField(max_length=64)
 	visibility_starttime = models.DateTimeField(null=True, blank=True)
 	visibility_endtime = models.DateTimeField(null=True, blank=True)
+	fixed_start = models.DateTimeField(null=True, blank=True)
 	duration = models.IntegerField()
 	allowed_users = models.ManyToManyField(User, related_name='accessexams')
+	tries = models.IntegerField(default=0)
 
 	def CoolDuration(self):
 		return self.duration
@@ -21,7 +23,11 @@ class Exam(models.Model):
 		return count
 
 	def TakeExam(self, user):
-		exam = user.exams.create(exam=self, starttime=timezone.now())
+		if self.fixed_start != None:
+			exam_start_time = self.fixed_start
+		else:
+			exam_start_time = timezone.now()
+		exam = user.exams.create(exam=self, starttime=exam_start_time)
 		# todo: choose some random questions
 		for group in self.questiongroup_set.all():
 			for question in group.questions.all():
@@ -52,7 +58,7 @@ class Question(models.Model):
 class Choice(models.Model):
 	question = models.ForeignKey(Question, related_name='choices')
 	text = models.CharField(max_length=512)
-	points = models.IntegerField(default=1)
+	points = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.text
@@ -90,6 +96,7 @@ class ExamInstance(models.Model):
 			if self.endtime == None:
 				self.endtime = timezone.now()
 				self.save()
+	#note: may return negative numbers
 	def time_left(self):
 		return self.exam.duration - (timezone.now() - self.starttime).seconds
 	def has_ended(self):

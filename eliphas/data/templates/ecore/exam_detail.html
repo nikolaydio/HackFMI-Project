@@ -13,8 +13,6 @@
 	<h4>There are no users signed for this exam.</h4>
 {% endfor %}
 
-{% if test_available %}
 <p><a href="{% url 'exam_questions' exam.id %}">Take exam</a></p>
-{% endif %}
 {% endblock %}
 

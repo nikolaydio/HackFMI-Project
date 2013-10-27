@@ -58,6 +58,11 @@ def exam_questions(request, exam_id):
 	exam = get_object_or_404(Exam, pk=exam_id)
 	examinstance = request.user.exams.filter(exam_id=exam.id, endtime=None)
 	if not examinstance:
+		#check if we have enough tries
+		if exam.tries != 0:
+			exam_instances = len(request.user.exams.filter(exam_id=exam_id))
+			if exam_instances >= exam.tries:
+				return HttpResponse("You cannot take this exam more than %i time." % exam.tries )
 		examinstance = exam.TakeExam(request.user)
 	else:
 		examinstance = examinstance[0]
