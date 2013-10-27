@@ -18,6 +18,8 @@ def home(request):
 	for ex in exams:
 		if (timezone.now() > ex.starttime):
 			dur = ex.exam.duration - (timezone.now() - ex.starttime).seconds
+			if dur <= 0:
+				continue
 			active_list.append([ex.exam.pk, ex.exam.name, dur])
 		else:
 			dur = (ex.starttime - timezone.now()).seconds
