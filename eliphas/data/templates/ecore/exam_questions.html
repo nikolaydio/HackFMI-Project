@@ -2,7 +2,7 @@
 
 {% block javascript %}
 	<!-- This is in seconds -->
-	var time_left = {{ time_left }}
+	var time_left = 0; // todo
 	function initialize()
 	{
 		setInterval(tick, 1000)
@@ -22,6 +22,16 @@
 		document.getElementById("tclock").innerHTML= 
 			hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
 	}
+
+	var xmlhttp;
+	if (window.XMLHttpRequest)
+	{
+		xmlhttp=new XMLHttpRequest();
+	}
+	function selectOption(id) {
+		xmlhttp.open('GET', 'select/' + id,true);
+		xmlhttp.send(null);
+	}
 {% endblock %}
 
 
@@ -37,17 +47,16 @@
 		<h4>Average points:</h4>
 		<p id="points">0/0</p>
 	</div>	
-
 	<div class="span4" id="main">
 		<h2>{{ examinst.exam.name }}</h2>
 		<div id="questions">
 			{% for question in examinst.questions.all %}
-				<div id="question">
+				<div>
 					<h4>Question #{{ forloop.counter }}</h4>
-					<p id="qdesc">{{ question.question.text }}</p>
-					<div id="options">
+					<p>{{ question.question.text }}</p>
+					<div>
 					{% for option in question.question.choices.all %}
-						<input type="radio" name="{{question.question.text}}" />{{ option.text }}</p>
+						<input type="radio" name="{{question.question.text}} onclick="selectOption({{ option.id }});"" />{{ option.text }}</br />
 					{% endfor %}
 					</div>
 				</div>
