@@ -18,7 +18,6 @@ class Exam(models.Model):
 			for question in group.questions.all():
 				exam.questions.create(question=question, choice=None)
 		return exam
-
 	def __unicode__(self):
 		return self.name
 
@@ -58,6 +57,32 @@ class ExamInstance(models.Model):
 
 	def __unicode__(self):
 		return str(self.user) + ": " + str(self.exam)
+	def result(self):
+		points = 0;
+		for q in self.questions.all():
+			if q.choice == None:
+				continue
+			points += q.choice.points
+		return points
+	def max_result(self):
+		points = 0;
+		for q in self.questions.all():
+			a = [i.points for i in Choice.objects.filter(question=q)]
+			if len(a) != 0:
+				points += max(a)
+		return points
+	def finish_exam(self, force):
+		flag = None
+		if force:
+			flag = True
+		elif (ex.exam.duration - (timezone.now() - ex.starttime).seconds) <= 0:
+			flag = True
+		else:
+			flag = False
+		if flag:
+			endtime = timezone.now()
+
+
 
 
 class QuestionInstance(models.Model):

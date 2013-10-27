@@ -14,17 +14,24 @@ from django.utils import timezone
 def home(request):
 	active_list = []
 	upcomming_list = []
+	taken_list = []
 	exams = request.user.exams.all()
 	for ex in exams:
 		if (timezone.now() > ex.starttime):
 			dur = ex.exam.duration - (timezone.now() - ex.starttime).seconds
 			if dur <= 0:
+				#exam is already taken:
+				taken_list.append([ex.exam.pk, ex.exam.name, ex.result(), ex.max_result()])
+				ex.finish_exam(True)
 				continue
 			active_list.append([ex.exam.pk, ex.exam.name, dur])
 		else:
 			dur = (ex.starttime - timezone.now()).seconds
 			upcomming_list.append( [ex.exam.pk, ex.exam.name, dur] )
-	c = RequestContext(request, {"active_exams":active_list, "upcomming_exams":upcomming_list, "active_count": len(active_list)})
+	c = RequestContext(request, {"active_exams":active_list,
+		"upcomming_exams":upcomming_list,
+		"active_count": len(active_list),
+		"taken_exams": taken_list})
 	return render_to_response('ecore/home.html', c)
 
 @login_required
