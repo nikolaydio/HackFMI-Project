@@ -1,18 +1,25 @@
 {% extends "ecore/base.html" %}
 {% block content %}
-<h2>{{ exam.name }}</h2>
 
+<div class="row-fluid">
+<div class="span4">
+<h2>{{ exam.name }}</h2>
 
 <p>Duration: {{ exam.CoolDuration }}</p>
 <p>Questions count: {{ exam.QuestionCount }}</p>
+<p><a href="{% url 'exam_questions' exam.id %}">Take exam</a></p>
 
-<h3>Users signed:</h3>
+
+</div>
+
+<div class="span8">
+<h4>Users signed:</h4>
 {% for user in exam.users_taken %}
-	<h4>{{ user }}</h4>
+	<p>{{ user }}</p>
 {% empty %}
-	<h4>There are no users signed for this exam.</h4>
+	<p>There are no users signed for this exam.</p>
 {% endfor %}
 
-<p><a href="{% url 'exam_questions' exam.id %}">Take exam</a></p>
+</div>
+</div>
 {% endblock %}
-

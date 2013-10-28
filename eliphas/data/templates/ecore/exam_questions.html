@@ -15,6 +15,7 @@
 		{
 			setInterval(tick, 1000*1000*1000)
 			time_left = 0
+			document.location('/')
 		}
 		var hours = ~~(time_left / 3600)
 		var minutes = ~~((time_left % 3600) / 60)
@@ -40,12 +41,13 @@
 	<div class="span4" id="sidebar">
 		<h4>Time left:</h4>
 		<p id="tclock">1:23:45</p>
-		<h4>Questions Answered:</h4>
-		<p id="questions">0/0</p>
-		<h4>People finished:</h4>
-		<p id="peoplec">0/0</p>
-		<h4>Average points:</h4>
-		<p id="points">0/0</p>
+		<h4>Questions Total:</h4>
+		<p id="questions">{{examinst.questions.all.count}}</p>
+
+		<form action="{% url 'exam_questions' examinst.exam.id %}" method="POST">
+		{% csrf_token %}
+		<input type="submit" value="End exam" />
+		</form>
 	</div>	
 	<div class="span8" id="main">
 		<h2>{{ examinst.exam.name }}</h2>

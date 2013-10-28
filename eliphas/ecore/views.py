@@ -67,6 +67,11 @@ def exam_questions(request, exam_id):
 		examinstance = exam.TakeExam(request.user)
 	else:
 		examinstance = examinstance[0]
+	if examinstance.has_ended():
+		return HttpResponse("The exam has ended")
+	if request.method == "POST":
+		examinstance.finish_exam(True)
+		return HttpResponseRedirect("/")
 	return render(request, 'ecore/exam_questions.html', {'examinst': examinstance })
 
 def exam_select_choice(request, exam_id, choice_id):
